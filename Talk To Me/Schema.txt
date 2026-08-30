@@ -1,0 +1,49 @@
+حان الوقت لتحديد شكل shecma ل database
+هستخدم ai علشان يساعدني في تحديد schemas for the tables
+
+User
+    id             auto-generated ID  required      primary-key
+    username       string             required      unique
+    email          string             required      unique
+    password       string             required      don't forget to hash it
+    bio            Text                             Default to null
+    image          string             required
+    createdAt      datetime           required      Auto-set
+    updatedAt      datetime           required      Auto-set
+
+
+Article
+    id             auto-generated ID  required      primary-key
+    slug           string             required      unique (auto generated from title)
+    title          string             required
+    description    string             required
+    body           text               required
+    favoritesCount int                required      Default to 0
+    authorId       reference -> user  required      foreign-key
+    createdAt      datetime           required      Aut-set
+    updatedAt      datetime           required      Auto-set
+
+Comment
+    id             auto-generated Int   required      primary-key
+    body           string               required
+    articleId      reference -> Article required      foreign-key
+    authorId       reference -> User    required      foreign-key
+    createdAt      datetime           required      Aut-set
+    updatedAt      datetime           required      Auto-set
+
+Tag
+    id             auto-generated id   required      primary-key
+    name           string               required      unique
+
+Favorites
+    userId         reference -> User    required      foreign-key
+    articleId      reference -> Article required      foreign-key
+
+Follows
+    followerId     reference -> User    required      foreign-key  (The user who is following)
+    followedId     reference -> User    required      foreign-key  (The user being followed)
+
+دلوقتي هبدأ اكتب كود
+1.هستخدم orm (drizzle) لتعريف schemas
+ولكن قبل ده محتاج انشا env.ts للوصول ل variable في ملف .env
+

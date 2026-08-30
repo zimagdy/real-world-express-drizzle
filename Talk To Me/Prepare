@@ -1,0 +1,465 @@
+------------- Features
+
+[https://docs.realworld.show/implementation-creation/features/]
+
+1. Jwt (login/signup pages + logout button on settings page)
+انا مش فاهم قاصده في حتة logout الا هو ازاي استخدم jwt في logout
+بس انا الاول محتاج انشا token وابعتها ل user في شكل cokkies
+اولا: في حالة sign up
+هعمله redirect للصفحه المفروض يخش عليها بعد ما يعمل login
+ثانيا: في حالة login
+هننشا token عادي وابعتهاله
+
+2. CRU_users (sign up & setting page - no deleting required)
+هو انا مش عارف لي مفيش delete بس انا ممكن اضيف الحته دي بس محتاج الاول اعدلها في frontend ولما user يعمل delete هأقله يدخل كلمة السر علشان أتاكد انه هو ولا لا + هقله ان الحساب هيتمسح بعد 30 يوم مثلا.
+
+3. CRUD Articles
+دي مفهومه
+
+4. CR-D comments on articles (no updating required)
+مفيش update او edit غريبه بس انا محتاج اضيف edit علي الكومينتس
+
+5. Get and display paginated list of articles
+مفهومه
+
+6. favorite articles
+محتاج اهندل حاجتين لما user يضيف favorite article ولما يعوز يشوف favorite articles بتاعته.
+
+7. follow other users
+مفهومه
+
+هو دلوقتي في entity ل user, article, comment, favorite article, followers and following
+مش عارف انا صح ولا بس مع قراءة documentation اكتر هنفهم اكتر
+------------- End of the features
+
+----- EndPoints
+[https://docs.realworld.show/specifications/backend/endpoints/]
+
+----
+1. Authentication
+POST /api/user/login
+Request Filed { email, password }
+
+Reuest Body
+{
+  "user":{
+    "email": "jake@jake.jake",
+    "password": "jakejake"
+  }
+}
+هسنخدم username, email علشان انشا token for the user
+Response Body
+{
+  "user": {
+    "email": "jake@jake.jake",
+    "token": "jwt.token.here",
+    "username": "jake",
+    "bio": null,
+    "image": null
+  }
+}
+هو مفيش authorization
+طب لو هعمل authorization المفروض اعملها علي اي ؟ معنديش فكره الصراحه
+لما نتعمق شويه هشوف هل ممكن اعمل authorization ولا لا.
+----
+
+2. Registration
+POST /api/users
+
+Request Body
+{
+  "user":{
+    "username": "Jacob",
+    "email": "jake@jake.jake",
+    "password": "jakejake"
+  }
+}
+
+هو دلوقتي مطلوب من المستخدم require filelds اثناء register
+username, email, password
+اكيد مش محتاج اقلك ان هنعمل hash لل password اثناء انشاءها في database
+----
+
+3. Get current user (Authentication required)
+GET /api/user
+
+Response Body
+{
+  "user": {
+    "email": "jake@jake.jake",
+    "token": "jwt.token.here",
+    "username": "jake",
+    "bio": null,
+    "image": null
+  }
+}
+
+----
+
+4. Update User (Authentication required)
+PUT /api/user
+
+Example Request Body
+{
+  "user":{
+    "email": "jake@jake.jake",
+    "bio": "I like to skateboard",
+    "image": "https://i.stack.imgur.com/xHWG8.jpg"
+  }
+}
+
+هو Accepted Fileds في request body
+email, username, password, bio, image
+
+----
+
+5. Get Profile (Authentication Optional)
+GET /api/profiles/:username
+بناء علي username هرجعله profile
+انا لحد دلوقتي مش عارف استنتج schemas for the entities
+طب هل response body هو هيكون شكل schema لا اعلم.
+اكمل اكمل لتري ما الذي ينتظرك
+Response Body
+{
+  "profile": {
+    "username": "jake",
+    "bio": "I work at statefarm",
+    "image": "https://api.realworld.io/images/smiley-cyrus.jpg",
+    "following": false
+  }
+}
+
+----
+
+6. Follow User
+POST /api/profiles/:username/follow (Create, Authentication required)
+
+تخيل السيناريو
+لو انا مستخدم رايج اعمل follow لشخص اخر هضغط علي ايقونه follow
+اذا username: في api هو الشخص الا انا هعمله follow
+والمفروض في قائمه ل following and followers في صفحة profile
+
+Response Body
+{
+  "profile": {
+    "username": "jake",
+    "bio": "I work at statefarm",
+    "image": "https://api.realworld.io/images/smiley-cyrus.jpg",
+    "following": true
+  }
+}
+
+----
+
+7. Unfollow User
+DELETE /api/profiles/:username/follow
+ازاي عملية delete هتتم داخل database
+عن طريق token (تقريبا) مهو مفيش طريق تانيه اعرف مين ال user الا عايز يعمل Unfollow لهذا الشخص
+
+Response Body
+{
+  "profile": {
+    "username": "jake",
+    "bio": "I work at statefarm",
+    "image": "https://api.realworld.io/images/smiley-cyrus.jpg",
+    "following": false
+  }
+}
+
+----
+
+8. List Articles (Authentication Optional)
+GET /api/articles
+
+هنالك query parameters: يجب أخذها في الاعتبار
+?tag, ?author, ?favoriteed, ?limit (default 20), ?offset (default 0)
+
+Response Body
+{
+  "articles":[{
+    "slug": "how-to-train-your-dragon",
+    "title": "How to train your dragon",
+    "description": "Ever wonder how?",
+    "tagList": ["dragons", "training"],
+    "createdAt": "2016-02-18T03:22:56.637Z",
+    "updatedAt": "2016-02-18T03:48:35.824Z",
+    "favorited": false,
+    "favoritesCount": 0,
+    "author": {
+      "username": "jake",
+      "bio": "I work at statefarm",
+      "image": "https://i.stack.imgur.com/xHWG8.jpg",
+      "following": false
+    }
+  }, {
+    "slug": "how-to-train-your-dragon-2",
+    "title": "How to train your dragon 2",
+    "description": "So toothless",
+    "tagList": ["dragons", "training"],
+    "createdAt": "2016-02-18T03:22:56.637Z",
+    "updatedAt": "2016-02-18T03:48:35.824Z",
+    "favorited": false,
+    "favoritesCount": 0,
+    "author": {
+      "username": "jake",
+      "bio": "I work at statefarm",
+      "image": "https://i.stack.imgur.com/xHWG8.jpg",
+      "following": false
+    }
+  }],
+  "articlesCount": 2
+}
+
+ordered by most recent first
+ازاي اعرف اخر articles الا اتنشرت عن طريق createdAt
+طب ماذا لو user عمل updatedAt لل article هل نعرضه برده اه اعرضه
+
+what a hack is this bro
+
+----
+
+9. Feed articles (Authentication required)
+GET /api/articles/feed
+الفرق ما بين list articles and feed articles
+list articles
+يعرف ب global feed
+يعني المنصه بتعرضلك احدث البوستات الا اتنشرت في اخر فتره سواء بقي اذا كنت مسجل دخول او لا
+
+feed article
+يعرف ب personal feed
+انت كمستخدم نعرض لك احدث البوستات من الاشخاص الذي تتباعهم
+
+هي مش دي برده حاجه خاصه بعمل الاجوريزمات
+حينما ياتي دورها سوف نفكر كيفية عملها
+
+Response Body the same for List articles api.
+
+----
+
+10. Get Article (no authentication required)
+GET /api/articles/:slug
+
+slug
+هو مشتق من title ولكن مع بعض التعديلات مثل اضافة هذه العلامات - لكي يبقي unique
+ماذا لو هنالك مقال يحملان نفس العنوان كيف يتم تحديد هذه العلامات مش منطقي هروح ابحث في database عن هذا ال title اذا كان موجود ولا لا اكيد هنالك طريقة اخري للتعامل مع هذا الامر وسوف ابحث عنها حين اصل الي هنا.
+لما لا نستخدم id الخاص ب article
+محركات البحث تبحث عن كلمات مفتاحيه لذلك لابد من وجود هذا slug للتحسين من الموقع وابجاد المستخدم له بسهوله.
+المستخدم لا يحب ان يري id فيه رموز عشوائيه
+
+Response Body
+{
+  "article": {
+    "slug": "how-to-train-your-dragon",
+    "title": "How to train your dragon",
+    "description": "Ever wonder how?",
+    "body": "It takes a Jacobian",
+    "tagList": ["dragons", "training"],
+    "createdAt": "2016-02-18T03:22:56.637Z",
+    "updatedAt": "2016-02-18T03:48:35.824Z",
+    "favorited": false,
+    "favoritesCount": 0,
+    "author": {
+      "username": "jake",
+      "bio": "I work at statefarm",
+      "image": "https://i.stack.imgur.com/xHWG8.jpg",
+      "following": false
+    }
+  }
+}
+
+----
+
+11. Create Article (Authentication required)
+POST /api/articles
+
+Example request body:
+{
+  "article": {
+    "title": "How to train your dragon",
+    "description": "Ever wonder how?",
+    "body": "You have to believe",
+    "tagList": ["reactjs", "angularjs", "dragons"]
+  }
+}
+
+Required fields: title, description, body
+
+Optional fields: tagList as an array of Strings
+
+Response Body:
+
+Return the article body (Get Article)
+----
+
+12. Update Article (Authentication required)
+PUT /api/articles/:slug
+
+Example Request Body
+{
+  "article": {
+    "title": "Did you train your dragon?"
+  }
+}
+
+Optional fields: title, description, body
+
+Note:
+The slug also gets updated when the title is changed
+
+Response Body
+Return the updated article
+
+----
+
+13. Delete Article (Authentication required)
+DELETE /api/articles/:slug
+
+----
+
+14. Add comments to an article (Authentication required)
+POST /api/articles/:slug/comments
+
+Example request body:
+{
+  "comment": {
+    "body": "His name was my name too."
+  }
+}
+
+Required field: `body`
+
+Response Body
+{
+  "comment": {
+    "id": 1,
+    "createdAt": "2016-02-18T03:22:56.637Z",
+    "updatedAt": "2016-02-18T03:22:56.637Z",
+    "body": "It takes a Jacobian",
+    "author": {
+      "username": "jake",
+      "bio": "I work at statefarm",
+      "image": "https://i.stack.imgur.com/xHWG8.jpg",
+      "following": false
+    }
+  }
+}
+
+----
+
+15. Get comments from an article (Authentication Optional)
+GET /api/articles/:slug/comments
+
+returns multiple comments
+Response Body ( Inside array )
+{
+  "comments": [{
+    "id": 1,
+    "createdAt": "2016-02-18T03:22:56.637Z",
+    "updatedAt": "2016-02-18T03:22:56.637Z",
+    "body": "It takes a Jacobian",
+    "author": {
+      "username": "jake",
+      "bio": "I work at statefarm",
+      "image": "https://i.stack.imgur.com/xHWG8.jpg",
+      "following": false
+    }
+  }]
+}
+
+----
+
+16. Delete Comment (Authentication required)
+DELETE /api/articles/:slug/comments/:id
+
+ازاي بقي دا بيحصل داخل database هتعرف كل شئ الصبر.
+
+----
+
+17. Favorite Article (Authentication required)
+POST /api/articles/:slug/favorite
+
+Response Body
+{
+  "article": {
+    "slug": "how-to-train-your-dragon",
+    "title": "How to train your dragon",
+    "description": "Ever wonder how?",
+    "body": "It takes a Jacobian",
+    "tagList": ["dragons", "training"],
+    "createdAt": "2016-02-18T03:22:56.637Z",
+    "updatedAt": "2016-02-18T03:48:35.824Z",
+    "favorited": true,
+    "favoritesCount": 0,
+    "author": {
+      "username": "jake",
+      "bio": "I work at statefarm",
+      "image": "https://i.stack.imgur.com/xHWG8.jpg",
+      "following": false
+    }
+  }
+}
+
+----
+
+18. Unfavorite Article (Authentication required)
+Delete /api/articles/:slug/favorite
+
+Response Body the same for Favorite article api with some eddition.
+
+----
+
+
+19. Get Tags
+Get /api/tags
+عايز افهم موضوع tags.
+Response Body
+{
+  "tags": [
+    "reactjs",
+    "angularjs"
+  ]
+}
+
+---- End of EndPoints
+
+
+---- Cors
+[https://docs.realworld.show/specifications/backend/cors/#considerations-for-your-backend-with-cors]
+
+ما هو cors
+هو اختصار cross-origin resource sharing
+لا اعرف ما فائدته ولكن دعنا نبحث ونقرأ عنه
+cors is a browser security mechanism
+في الطبيعي لو عملت fetch for api في frontend لو السيرفر في response headear مفيش
+Access-Control-Allow-Origin: https://your-site.com
+المتصفح بيمنع ان fetch دا يحصل.
+
+لا تنسي ان تضع cors in code (origin, method, headears)
+
+---- End of Cors
+
+
+---- Error Handling
+
+Errors and Status Codes
+If a request fails any validations, expect a 422 and errors in the following format:
+
+{
+  "errors":{
+    "body": [
+      "can't be empty"
+    ]
+  }
+}
+
+Other status codes:
+401 for Unauthorized requests, when a request requires authentication but it isn’t provided
+
+403 for Forbidden requests, when a request may be valid but the user doesn’t have permissions to perform the action
+
+404 for Not found requests, when a resource can’t be found to fulfill the request
+
+----
+
+والان قد حان الوقت لبدء بناء المشروع 😃
+لنبدأ ب define schemas في ملف اخر
