@@ -1,0 +1,40 @@
+دلوقتي اول حاجه هعملها هي انشاء  ال endpoint
+واول حاجه هتكون ل authentation الخاص ب sign up and sign in
+ولا تنسي استخدام jwt
+
+اول حاجه  هعملها هي endpoint for register
+محتاج افهم الاول اي الا بيحصل في عملية register
+register
+عملية انشاء حساب
+المستخدم يدخل username, email and password
+انا محتاج اتحقق من username and email دول موجودين ولا لا
+لو موجودين هنقله انهم موجودين جرب username or email اخرين
+لو مش موجودين نضيفهم لل database
+دلوقتي انا عملت كل حاجه تخص ال register endpoint ولكن هناك بعض المشاكل
+اول خاجه
+لما بعمل sign up تاني بنفس ال username, email بيقلي ان page unavliable (انا في backend برجعه status code 409 with message ) ودا معناه ان frontend مش بي handle الخطا الا لو المستخدم دخل username and email موجودين
+كده انا محتاج اخلي ai يبني الحته دي في frontend
+تمت المهمه
+
+في خاجه تانيه
+لما المستخدم بيعمل sign up بنجاح هو بيتعمله redirect علي ال setting والا بتطلب منه
+url of the profile pictures
+name
+bio
+email
+newPassword
+
+دا هيكون put request والا محتاجين فيه نعمل update لل settings بتاع المستخدم
+
+انا عملت validate ل user object in the backend باستخدم zod
+وبما ان frontend مش بيهندل errors الا بتحصل لما validate يفشل فانا طلب من api انه يكتب الكود الا يهندل ال errors الا بتحصل دي وهو بناها handleApiErrors وانا عملت كده علشان ال error الا بيظهرر لما ارسل status code 422 بيظهر خطا (something wen wrong) مش موضح اي المشكله فانا علشان كده خليت ال ai يعمل كده
+
+دلوقتي اعتقد يعني انا بنيت كل ما يخص register اعتقد
+
+اعتقد عمليه login هتكون سهله
+لان انت بس محتاج تتحقق من email and password
+وتشوف هل email موجود في database ولا لا وبعد كده تتحقق من password عن طريق compare password في bcrypt لان الباسورد الا في database هي hashed password وبعد كده ترسل user object وطبعا مع token
+وبكده اكون خلصت عمليه registe and login وعملت validatebody عن طريق zod بحيث انه يتحقق من القيمه الاول انها مش فاضيه وبس كده
+
+
+
