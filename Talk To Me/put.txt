@@ -1,0 +1,13 @@
+
+دلوقتي هعمل put request والا بيحصل لما المستخدم بيعمل update for profile
+انا عملت update بعد sign up
+ودا كان شكل request
+{
+  email: 'ahfbcaca@gmail.com',
+  password: '',
+  username: 'afhfahbca',
+  bio: '',
+  image: ''
+}
+دلوقتي انا محتاج اشوف username من token اعمل verify واشوف هل هو موجود في database ولا لا وبعد كده اعمل update for this fields لو password null زي كده انا مش هغيره وبس
+

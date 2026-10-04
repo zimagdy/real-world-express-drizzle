@@ -37,7 +37,7 @@
 
 ----
 1. Authentication
-POST /api/user/login
+POST /api/users/login
 Request Filed { email, password }
 
 Reuest Body

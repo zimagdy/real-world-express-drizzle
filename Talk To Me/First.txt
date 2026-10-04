@@ -36,5 +36,28 @@ newPassword
 وتشوف هل email موجود في database ولا لا وبعد كده تتحقق من password عن طريق compare password في bcrypt لان الباسورد الا في database هي hashed password وبعد كده ترسل user object وطبعا مع token
 وبكده اكون خلصت عمليه registe and login وعملت validatebody عن طريق zod بحيث انه يتحقق من القيمه الاول انها مش فاضيه وبس كده
 
+بعد كده هعمل get current user
+وعملية التحقق بتتم عن طريق ال token
+دلوقتي ال frontend بيخزن token في local storage for the website
+هدفي دلوقتي ان اعرف ازاي احصل علي token دي لما تترسل من user.
 
+عملتها عن طريق ان حصلت عليها من authorization from headear
+وبعد كده استخدمت verify token
+ودي function انا بنيتها باستخدم jwt.verify وال function return the jwtpayload (username and email)
+وبعد كده رجعت respone body وبس كده
+
+
+دلوقتي هعمل put request والا بيحصل لما المستخدم بيعمل update for profile (settings)
+انا مش عارف لي فيه update for profile after the user sign up or sign
+بالنسبه لي دي تجربة user سيئه
+المهم دا كان شكل request
+{
+  email: 'ahfbcaca@gmail.com',
+  password: '',
+  username: 'afhfahbca',
+  bio: '',
+  image: ''
+}
+
+الان ماذا يجب ان افعل كيف اتعامل مع هذا ؟
 
