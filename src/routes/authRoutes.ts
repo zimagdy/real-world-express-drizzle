@@ -2,7 +2,6 @@ import Router from 'express'
 import z from 'zod'
 import { register, login } from '../controllers/authController.ts'
 import { validateBody } from '../middleware/validation.ts'
-import { zstdCompress } from 'node:zlib'
 
 const router = Router()
 
