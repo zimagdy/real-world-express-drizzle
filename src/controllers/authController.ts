@@ -102,7 +102,7 @@ export const login = async (req: Request, res: Response) => {
       email: email_,
     })
 
-    return res.status(201).json({
+    return res.status(200).json({
       message: 'Login successful',
       user: {
         ...result,
